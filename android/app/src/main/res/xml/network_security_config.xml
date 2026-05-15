@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  CVE-9 FIX: Network Security Config
+  Enforces HTTPS for all connections in release builds.
+  Debug builds allow cleartext for local dev tools only.
+-->
+<network-security-config>
+    <!-- Production: only trust system CAs, no cleartext HTTP -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- GitHub raw content — our only external data source -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">raw.githubusercontent.com</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+
+    <!-- Debug only: allow all for local development -->
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
+</network-security-config>

@@ -1,0 +1,1409 @@
+﻿ion landmark. The extracted 
+S
+UC-
+NMS-
+06 
+TC-NMS-12a: Correct 
+extraction in 3 known queries. 
+TC-NMS-12b: Ambiguous query 
+→ clarification prompt. TC-
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 8 
+values shall be passed to the route-calculation 
+engine within 3 seconds of query submission.
+NMS-12c: API failure → manual 
+input fallback shown.
+FR-
+NMS-
+13 
+...display a fallback manual input form if the GenAI 
+API is unavailable (no network, API quota exceeded). 
+The fallback form shall allow the user to select 
+source and destination from dropdowns within 1 
+second of API failure detection. 
+M
+UC-
+NMS-
+06 
+TC-NMS-13a: Fallback form 
+appears within 1s of API failure. 
+TC-NMS-13b: Form works fully 
+offline. TC-NMS-13c: Manual 
+selection produces correct 
+route.
+ 
+4.8 FR Group 7 — Admin Station Data Management (PRD Section 5.7) 
+FR 
+ID 
+Requirement — The system shall… 
+Pri 
+UC 
+Ref 
+Test IDs 
+FR-
+NMS-
+14 
+...allow an Admin user to add or edit a Station Exit 
+record containing: Station Name (required), Gate 
+Number (required, unique within station), Direction 
+Label (required, max 30 chars), Walking Distance 
+(integer metres, >0), Landmark Associations (array of 
+landmark strings). On Save, the record shall be 
+persisted to the Room DB ExitGate table.
+M
+UC-
+NMS-
+07 
+TC-NMS-14a: Valid exit → 
+persisted. TC-NMS-14b: 
+Duplicate gate number → 
+error. TC-NMS-14c: Walking 
+distance=0 → error. 
+FR-
+NMS-
+15 
+...allow an Admin user to upload or replace a 
+platform/exit photo for a station step. The photo shall be 
+stored locally in the app’s internal storage directory. 
+Maximum file size: 500 KB. On upload, the old photo 
+shall be replaced and the Visual Guide shall display the 
+updated image within 2 seconds.
+S
+UC-
+NMS-
+07 
+TC-NMS-15a: Photo upload 
+replaces old image within 2s. 
+TC-NMS-15b: File >500KB 
+→ rejected with error. TC-
+NMS-15c: Updated photo 
+shown offline.
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 9 
+5. Non-Functional Requirements (NFR) 
+5.1 NFR Format 
+NFR-[Category]-[Number]: [Quality attribute] measured by [specific test method] achieving [measurable threshold] 
+under [defined conditions]. 
+ 
+5.2 NFR Specifications 
+NFR ID 
+Category 
+Measurable Requirement 
+Test Method 
+Threshold 
+NFR-
+PERF-01 
+Performance
+Route calculation and first step 
+of Visual Guide shall display 
+within 2,000ms of user tapping 
+‘Find Route’, when the device 
+has the route graph in Room 
+DB.
+Android Studio Profiler. 
+Tap Find Route; measure 
+to first Stepper step 
+rendered. Run 3 times. 
+Average < 
+2,000ms across 
+3 runs 
+NFR-
+PERF-02 
+Performance
+Exit Finder query result shall 
+render within 1,500ms of user 
+submitting a landmark query, 
+when landmark exists in Room 
+DB.
+Profiler: measure from 
+Submit tap to card render. 
+Run 3 times. 
+Average < 
+1,500ms 
+NFR-
+USAB-01 
+Usability
+The full journey from app 
+launch to viewing the first 
+Visual Guide step shall be 
+completable by a first-time user 
+(no Metro experience) within 60 
+seconds without instructions.
+Usability test: 3 users 
+unfamiliar with app. 
+Record time and error 
+count. 
+All 3 users ≤60s 
+with ≤1 error 
+NFR-
+USAB-02 
+Usability
+All Kannada text elements shall 
+render at minimum 18sp. No 
+text shall be truncated on a 5-
+inch 1080p screen.
+Screenshot test on Pixel 
+4a emulator (5.81”, 
+1080p). Inspect all 
+screens.
+Zero truncated 
+Kannada strings 
+on target screen 
+NFR-
+RELY-01 
+Reliability
+No cached station exit data or 
+route graph data in Room DB 
+shall be lost on unexpected app 
+force-close or system restart.
+Insert 10 stations and 20 
+exits via admin. Force-
+close app. Reopen. Count 
+all records.
+100% of records 
+present after 
+force-close 
+NFR-
+PORT-01 
+Portability
+The application shall run 
+without crashes on Android 9.0 
+(API 28) and above. All UI 
+elements shall render correctly. 
+Run full functional test 
+suite on Android 9.0 API 
+28 emulator. Record 
+crashes and rendering 
+issues.
+Zero crashes. 
+Zero unrendered 
+elements. 
+NFR-
+OFFLINE-
+01 
+Offline
+The Visual Guide and Exit 
+Finder shall function fully with 
+no internet connection after 
+initial cache. All station photos 
+shall load from local storage 
+within 1,000ms.
+Enable airplane mode after 
+first launch. Navigate 
+through full Visual Guide. 
+Record any failed loads. 
+100% of guide 
+steps load within 
+1,000ms in 
+airplane mode 
+NFR-
+SCAL-01 
+Scalability
+MVVM architecture shall be 
+maintained throughout. No 
+Room DAO call shall exist 
+directly in any Composable 
+function.
+Code review: grep all 
+Composable files for direct 
+DAO imports. Count must 
+be 0. 
+0 direct DAO 
+calls in 
+Composable files 
+NFR-
+MAINT-01 
+Maintainability
+All business logic (pathfinding, 
+fare calculation, exit lookup) 
+shall reside in ViewModels or 
+Repositories. No business logic 
+in Composable functions. 
+Code review checklist: (1) 
+0 pathfinding in 
+Composables. (2) All state 
+as StateFlow. (3) 
+Repository is only class 
+importing Room DAO.
+Pass all 3 
+checklist items 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 10 
+NFR-
+DATA-01 
+Data Usage
+The app shall function with no 
+data connection after first 
+launch (offline-first). Initial 
+cache download shall not 
+exceed 50 MB.
+Measure total download 
+size on first launch using 
+Android Studio Network 
+Profiler. 
+Initial cache ≤50 
+MB 
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 11 
+6. Use Case Register and Specifications 
+6.1 Use Case Register 
+UC ID 
+Use Case Name 
+Primary Actor 
+PRD 
+Section 
+Priority / Status 
+UC-NMS-
+01
+Query Route and View Fare
+Meena Devi
+Section 5.1
+Must Have | [ ] Draft [ ] 
+Accepted
+UC-NMS-
+02
+View Visual Step-by-Step 
+Guide
+Meena Devi
+Section 5.2
+Must Have | [ ] Draft [ ] 
+Accepted
+UC-NMS-
+03
+Find Exit Gate for Landmark
+Meena Devi
+Section 5.3
+Must Have | [ ] Draft [ ] 
+Accepted
+UC-NMS-
+04
+Use App Offline (Inside Tunnel)
+Meena Devi
+Section 5.4
+Must Have | [ ] Draft [ ] 
+Accepted
+UC-NMS-
+05
+Switch Language to Kannada
+Meena Devi
+Section 5.5
+Must Have | [ ] Draft [ ] 
+Accepted
+UC-NMS-
+06
+Submit Natural Language 
+Query (GenAI)
+Meena Devi
+Section 5.6
+Should Have | [ ] Draft [ ] 
+Accepted
+UC-NMS-
+07
+Admin: Manage Station Exit 
+Data
+Rajesh Kumar 
+(Admin)
+Section 5.7
+Must Have | [ ] Draft [ ] 
+Accepted
+ 
+6.2 Use Case Specification — UC-NMS-02: View Visual Step-by-Step Guide 
+UC-NMS-02 
+View Visual Step-by-Step Guide 
+Actor(s)
+Meena Devi (Primary Metro User — Section 2.2 persona)
+PRD 
+Reference
+PRD Section 5.2 Visual Guide | FR-NMS-03, FR-NMS-04, FR-NMS-05
+Trigger
+User taps ‘Show Me How’ after a route is calculated on the Route Result screen.
+Pre-
+conditions
+1. A valid route has been computed (FR-NMS-01). 2. Station photos and step data are cached 
+in Room DB. 3. No network required.
+Main Success 
+Scenario 
+1. System displays Stepper UI with Step 1 of the journey. 2. Each step shows: a platform/exit 
+photo, a one-line Kannada instruction, step number (e.g., ‘3 of 7’), and a ‘Next’ button. 3. At 
+interchange step, dual Purple/Green colour indicator shown with platform number and corridor 
+photo. 4. Token Machine sub-flow shown if user is at origin station step. 5. Final step shows 
+destination exit gate and walking direction. 6. User taps ‘Done’ and returns to Route Result 
+screen.
+Alternative 
+Flows 
+Alt-1 (No interchange on route): Interchange step skipped entirely. Alt-2 (User navigates back): 
+‘Previous’ button shown on all steps except Step 1. Tapping navigates to prior step without 
+recalculation. Alt-3 (User taps Exit Finder from guide): System opens Exit Finder for the 
+destination station pre-filled.
+Exception 
+Flows 
+Ex-1 (Photo not in cache): Placeholder image shown with text ‘Photo unavailable offline’. Step 
+instruction still visible. Ex-2 (Route data missing for a step): Step shows ‘Data unavailable for 
+this stop. Please reconnect.’ with Retry button. Ex-3 (Device storage full, cache failed): Banner 
+shown: ‘Offline guide unavailable. Storage full.’ Ex-4 (User rotates device mid-guide): Current 
+step retained; stepper re-renders in landscape. No data loss.
+Post-
+conditions
+1. User has viewed all steps. 2. Stepper position not saved (stateless). 3. No network calls 
+made during guide traversal.
+Business 
+Rules 
+BR-01: All photos shall be sourced from Room DB (local cache), never loaded from network 
+during guide traversal. BR-02: Interchange step is shown only if the route crosses between 
+Purple and Green lines. BR-03: Kannada text is always shown regardless of device locale, 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 12 
+since this guide targets Kannada-speaking first-timers. BR-04: Step count label always reflects 
+total steps for the computed route.
+Acceptance 
+Criteria 
+AC-01: Full guide navigable in airplane mode with all photos from local cache. (Tests FR-NMS-
+03, NFR-OFFLINE-01). AC-02: Interchange step shows dual-colour indicator and correct 
+platform number. (Tests FR-NMS-04). AC-03: Token Machine sub-flow appears on origin 
+station step. (Tests FR-NMS-05). AC-04: All 4 exception flows (Ex-1 through Ex-4) handled 
+without app crash.
+ 
+6.3 Use Case Specification — UC-NMS-03: Find Exit Gate for Landmark 
+UC-NMS-03 
+Find Exit Gate for Landmark 
+Actor(s)
+Meena Devi
+PRD 
+Reference
+PRD Section 5.3 Exit Finder | FR-NMS-06, FR-NMS-07
+Trigger
+User taps ‘Which Gate?’ button on the Route Result screen, or from the final step of the Visual 
+Guide.
+Pre-
+conditions
+1. User has a destination station selected. 2. ExitGate table in Room DB has records for that 
+station. 3. No network required.
+Main Success 
+Scenario 
+1. System displays Exit Finder screen with the destination station pre-filled. 2. User enters or 
+confirms a landmark (e.g., ‘KSRTC Bus Stand’). 3. System queries Room DB ExitGate table for 
+matching landmark association. 4. System displays Exit Card: Gate Number (large bold font), 
+Direction Label, Walking Distance, Static exit map image. 5. User reads gate number and exits 
+the station accordingly.
+Alternative 
+Flows 
+Alt-1 (Multiple gates for landmark): System shows a list of matching gates ranked by walking 
+distance (nearest first). Alt-2 (User changes destination station): Station picker shown; ExitGate 
+table queried for new station.
+Exception 
+Flows 
+Ex-1 (Landmark not in DB): ‘We don’t have data for this landmark. Please ask at the Help Desk.’ 
+shown. Ex-2 (Station has no exit data): ‘Exit data not yet available for this station.’ Ex-3 (Exit 
+map image not cached): Placeholder with direction text only. Ex-4 (Query timeout >1,500ms): 
+Spinner shown; ‘Loading…’ for up to 3s, then error with Retry.
+Post-
+conditions
+1. Correct gate displayed to user. 2. No network call made. 3. User can tap ‘Back’ to return to 
+guide or route result.
+Business 
+Rules 
+BR-01: Gate lookup is always from Room DB (offline). BR-02: Landmarks are stored as an array 
+of strings in ExitGate table — fuzzy matched against user input (case-insensitive contains). BR-
+03: Walking distance is integer metres — displayed as ‘~X metres’. BR-04: Exit map images are 
+cached at first app launch and are never dynamically loaded.
+Acceptance 
+Criteria 
+AC-01: Exit card renders within 1,500ms for landmark in DB. (Tests FR-NMS-06, NFR-PERF-
+02). AC-02: All screens function fully in airplane mode. (Tests NFR-OFFLINE-01). AC-03: All 4 
+exception flows produce correct messages without crash.
+ 
+6.4 Use Case Specification — UC-NMS-01: Query Route and View Fare 
+UC-NMS-01 
+Query Route and View Fare 
+Actor(s)
+Meena Devi / Any Registered or Guest User
+PRD 
+Reference
+PRD Section 5.1 Route Query | FR-NMS-01, FR-NMS-02
+Trigger
+User taps ‘Plan My Journey’ on the Home screen.
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 13 
+Pre-
+conditions
+1. App is installed on Android 9.0+ device. 2. Station graph is cached in Room DB. 3. Fare 
+matrix is cached in Room DB.
+Main 
+Success 
+Scenario 
+1. System displays Route Query screen with two fields: ‘Where are you?’ and ‘Where to go?’. 2. 
+User types or speaks source (e.g., ‘Majestic’). Auto-complete dropdown shows matching station 
+names from Room DB. 3. User selects destination (e.g., ‘Jayanagar’). 4. User taps ‘Find Route’. 
+5. System runs Dijkstra / BFS on the Metro graph in Room DB. 6. System displays Route Result 
+card: Line Colour, Stops List, Interchange station (if any), Fare (₹), Estimated Time (mins). 7. 
+User taps ‘Show Me How’ to proceed to Visual Guide (UC-NMS-02).
+Alternative 
+Flows 
+Alt-1 (GenAI input): User types a natural-language query. System passes to Gemini API (FR-
+NMS-12). Extracted stations populated in the two fields. Alt-2 (Same source and destination): 
+System shows ‘Source and destination are the same. Please change one.’
+Exception 
+Flows 
+Ex-1 (Station not found in DB): Inline error ‘Station not found. Check spelling.’ Ex-2 (No path 
+exists between selected stations): ‘No Metro route found. These stations may not be connected.’ 
+Ex-3 (Room DB load failure): ‘Could not load station data. Please restart the app.’ Ex-4 (API 
+timeout for GenAI >3s): Fallback manual input shown (FR-NMS-13).
+Post-
+conditions
+1. Route Result displayed with fare and time. 2. User can proceed to Visual Guide or Exit Finder. 
+3. No network required for route calculation (offline).
+Business 
+Rules 
+BR-01: Pathfinding uses graph stored in Room DB — never a live API. BR-02: Fare is looked up 
+from fare_matrix table (source_station_id, dest_station_id → fare_inr). BR-03: Estimated time = 
+SUM(avg_segment_duration_mins) along the computed path. BR-04: Interchange is flagged 
+when path crosses from Purple line to Green line or vice versa.
+Acceptance 
+Criteria 
+AC-01: Route and fare displayed within 2,000ms of tapping ‘Find Route’. (Tests FR-NMS-01, 
+NFR-PERF-01). AC-02: Fare value matches fare_matrix for 3 known station pairs. (Tests FR-
+NMS-02). AC-03: All 4 exception flows handled with correct inline errors. AC-04: Result fully 
+available in airplane mode.
+ 
+6.5 Use Case Specification — UC-NMS-06: Submit Natural Language Query (GenAI) 
+UC-NMS-06 
+Submit Natural Language Query (GenAI) 
+Actor(s)
+Meena Devi / Any User
+PRD 
+Reference
+PRD Section 5.6 GenAI | FR-NMS-12, FR-NMS-13
+Trigger
+User taps the microphone / text icon on the Route Query screen and types a sentence such as 
+‘How do I reach NIMHANS from Majestic?’
+Pre-
+conditions
+1. Network is available. 2. Gemini API key is configured. 3. Room DB station list is loaded.
+Main Success 
+Scenario 
+1. User types free-text query in the natural-language input field. 2. System sends query to 
+Gemini API with a prompt: ‘Extract the source Metro station and destination landmark from this 
+query: [user input]. Return JSON: {source_station, destination_landmark}’. 3. API returns 
+structured JSON within 3 seconds. 4. System validates both fields against the Room DB station 
+list. 5. If source station matched and destination landmark matched — system auto-fills Route 
+Query fields. 6. System runs route calculation (UC-NMS-01 flow from Step 5).
+Alternative 
+Flows 
+Alt-1 (Only destination extractable, source unclear): System fills destination field and asks 
+‘Where are you boarding?’ with station picker. Alt-2 (User query in Kannada): System passes 
+Kannada text to Gemini; expected to extract station names from Kannada transliteration.
+Exception 
+Flows 
+Ex-1 (No network): Fallback manual form shown immediately (FR-NMS-13). Ex-2 (API returns 
+unrecognised station): ‘We couldn’t understand your query. Please select stations manually.’ 
+Manual form shown. Ex-3 (API timeout >3s): Loading spinner shown; after 3s, fallback form 
+shown with message ‘AI query timed out. Please select manually.’ Ex-4 (API quota exceeded): 
+Same fallback as Ex-3.
+Post-
+conditions
+1. Route Query fields auto-filled with extracted source and destination. 2. User can review and 
+confirm before tapping Find Route. 3. If fallback triggered, manual form fully functional offline.
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 14 
+Acceptance 
+Criteria 
+AC-01: 3 known natural-language queries correctly extract source + destination within 3s. (Tests 
+FR-NMS-12). AC-02: All 4 exception flows trigger correct fallback without crash. (Tests FR-
+NMS-13). AC-03: Fallback manual form works fully in airplane mode.
+ 
+6.6 Use Case Specification — UC-NMS-07: Admin — Manage Station Exit Data 
+UC-NMS-07 
+Admin: Manage Station Exit Data 
+Actor(s)
+Rajesh Kumar (Admin — Section 2.2 persona)
+PRD 
+Reference
+PRD Section 5.7 Admin | FR-NMS-14, FR-NMS-15
+Trigger
+Admin taps ‘Admin Panel’ in navigation menu (visible only to users with admin_role = true in 
+SharedPreferences / local config).
+Pre-
+conditions
+1. User is identified as admin. 2. Admin Panel screen is displayed. 3. Room DB is accessible.
+Main Success 
+Scenario 
+1. Admin sees a list of all stations with exit count. 2. Admin selects a station (e.g., ‘Jayanagar’). 
+3. Admin taps ‘Add Exit’. Form shown: Gate Number, Direction Label, Walking Distance 
+(metres), Landmark Associations. 4. Admin fills form and taps ‘Save’. 5. System validates 
+uniqueness of Gate Number within station. 6. Record persisted to Room DB ExitGate table. 7. 
+Exit Finder immediately reflects the new gate for all users.
+Alternative 
+Flows 
+Alt-1 (Edit existing exit): Admin taps edit icon. All fields editable. On Save, updated record 
+persisted and Exit Finder reflects change. Alt-2 (Upload photo): Admin taps ‘Upload Photo’ on a 
+step. File picker opens. File validated (<500KB). Photo replaces old file in internal storage.
+Exception 
+Flows 
+Ex-1 (Duplicate Gate Number): Inline error ‘Gate X already exists for this station.’ Save 
+disabled. Ex-2 (Walking Distance ≤0): ‘Walking distance must be greater than 0.’ Ex-3 (Photo 
+file >500KB): ‘Photo too large. Maximum size is 500 KB.’ Ex-4 (DB write failure): Toast ‘Save 
+failed. Check device storage.’ Ex-5 (Non-admin access attempt): Admin Panel hidden from nav 
+menu; direct URL access redirected to Home.
+Post-
+conditions
+1. ExitGate table updated with new or edited record. 2. Exit Finder returns updated gate for 
+affected station. 3. Photo (if updated) stored in internal storage and shown in Visual Guide.
+Acceptance 
+Criteria 
+AC-01: Valid exit record persisted to Room DB within 500ms of Save tap. (Tests FR-NMS-14). 
+AC-02: Updated photo appears in Visual Guide within 2s. (Tests FR-NMS-15). AC-03: All 5 
+exception flows produce correct inline errors. AC-04: Non-admin users cannot access Admin 
+Panel.
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 15 
+7. Requirements Modelling 
+7.1 Use Case Diagram — System Boundary 
+ 
+ 
+Figure 7.1 — Namma-Metro Sahaya Use Case Diagram. System boundary contains UC-NMS-01 through UC-
+NMS-07. Actors: Guest/Registered User (Meena), Admin (Rajesh), External System (Gemini API). 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 16 
+7.2 Entity-Relationship Diagram (ERD) 
+ 
+ 
+Figure 7.2 — Namma-Metro Sahaya ERD. Shows 5 Room DB tables: Stations, Lines, Segments, ExitGates, 
+FareMatrix. FK relationships and cascade-delete behaviour shown. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 17 
+7.3 State Transition Diagram — Visual Guide Step Lifecycle 
+ 
+ 
+States: IDLE → ROUTE_COMPUTED → GUIDE_ACTIVE (steps 1…N) → GUIDE_COMPLETE. Transitions: 
+Find Route tapped, Next tapped, Previous tapped, Done tapped, Back pressed. Exception transitions: Photo load 
+failure → PLACEHOLDER state (continues). Network loss → remains in GUIDE_ACTIVE (offline). 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 18 
+7.4 Data Flow Diagram — Level 1 
+ 
+Process P1 (Route Engine): Receives source + destination → reads Stations and Segments from Room DB → 
+outputs ordered stop list and fare. Process P2 (Visual Guide Renderer): Reads step definitions and cached 
+photos from Room DB → renders Stepper UI. Process P3 (Exit Finder): Receives landmark string → queries 
+ExitGate table → returns gate card. Process P4 (GenAI Parser): Receives free text → calls Gemini API → returns 
+structured station fields to P1. 
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 19 
+8. Data Requirements — Database Schema 
+8.1 Room DB Tables Schema 
+Stations Table 
+Field 
+Type 
+Constraint 
+Default 
+FR 
+Source 
+Notes 
+station_id
+String
+PRIMARY KEY | auto UUID
+—
+FR-NMS-01
+Room auto-generate
+station_name
+String
+NOT NULL | maxLength 60 | 
+UNIQUE
+—
+FR-NMS-01
+e.g., ‘Majestic’
+line_id
+String
+NOT NULL | FK → Lines.line_id
+—
+FR-NMS-01
+Purple or Green line
+is_interchange
+Boolean
+NOT NULL
+false
+FR-NMS-04
+True for 
+Majestic/KSR
+created_at
+Long
+NOT NULL | system time
+now()
+FR-NMS-14
+Unix timestamp ms
+ 
+Lines Table 
+Field 
+Type 
+Constraint 
+Default 
+FR Source 
+Notes 
+line_id
+String
+PRIMARY KEY
+—
+FR-NMS-01
+e.g., ‘purple’, ‘green’
+line_name
+String
+NOT NULL | maxLength 30
+—
+FR-NMS-04
+e.g., ‘Purple Line’
+colour_hex
+String
+NOT NULL | 7-char hex
+—
+FR-NMS-04
+e.g., ‘#4A148C’ for Purple
+ 
+Segments Table (Edges in Metro Graph) 
+Field 
+Type 
+Constraint 
+Default 
+FR 
+Source 
+Notes 
+segment_id
+String
+PRIMARY KEY
+—
+FR-NMS-
+01
+Auto UUID
+from_station_id
+String
+NOT NULL | FK → 
+Stations
+—
+FR-NMS-
+01
+Origin node
+to_station_id
+String
+NOT NULL | FK → 
+Stations
+—
+FR-NMS-
+01
+Destination node
+avg_duration_mins
+Integer
+NOT NULL | > 0
+—
+FR-NMS-
+02
+Avg travel time between 
+stations
+line_id
+String
+NOT NULL | FK → 
+Lines
+—
+FR-NMS-
+01
+Which line this segment is 
+on
+ 
+ExitGates Table 
+Field 
+Type 
+Constraint 
+Default 
+FR 
+Source 
+Notes 
+exit_id
+String
+PRIMARY KEY
+—
+FR-NMS-
+14
+Auto UUID
+station_id
+String
+NOT NULL | FK → Stations
+—
+FR-NMS-
+14
+Parent station
+gate_number
+String
+NOT NULL | UNIQUE within 
+station
+—
+FR-NMS-
+14
+e.g., ‘Gate 2’
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 20 
+direction_label
+String
+NOT NULL | maxLength 30
+—
+FR-NMS-
+14
+e.g., ‘North Exit’
+walking_dist_m
+Integer
+NOT NULL | > 0
+—
+FR-NMS-
+14
+Metres to landmark
+landmarks
+String
+NOT NULL | JSON array of 
+strings
+[]
+FR-NMS-
+06
+e.g., ["KSRTC Bus 
+Stand"]
+photo_path
+String
+NULLABLE | local file path
+null
+FR-NMS-
+15
+Path to cached exit map 
+image
+ 
+FareMatrix Table 
+Field 
+Type 
+Constraint 
+Default 
+FR Source 
+Notes 
+fare_id
+String
+PRIMARY KEY
+—
+FR-NMS-02
+Auto UUID
+src_station_id
+String
+NOT NULL | FK → Stations
+—
+FR-NMS-02
+Source station
+dst_station_id
+String
+NOT NULL | FK → Stations
+—
+FR-NMS-02
+Destination station
+fare_inr
+Integer
+NOT NULL | > 0
+—
+FR-NMS-02
+Fare in Indian Rupees
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 21 
+9. UI / UX Requirements 
+9.1 Design System — Colour Palette (Mandatory) 
+Colour Role 
+Hex 
+Code 
+Usage Rule 
+Composable / Element 
+Primary (Deep 
+Purple)
+#4A148C
+Navigation headers, primary action 
+buttons, Purple Line indicators
+TopAppBar, FAB, NavigationBar 
+selected item
+Accent (Green 
+Line)
+#1B5E20
+Green Line route steps, success states, 
+interchange indicator
+Interchange step card, success 
+toasts
+Warning 
+(Orange)
+#E65100
+Offline banner, validation errors, missing 
+photo placeholder
+Alert banner, inline error text
+Light Purple BG
+#F3E5F5
+Alternate row shading, card backgrounds
+Stepper step cards, list alternate 
+rows
+Background
+#F5F5F5
+All screen backgrounds
+Scaffold background
+White
+#FFFFFF
+Card surfaces, modal backgrounds
+Card composables, dialog 
+backgrounds
+ 
+9.2 Key Screen Requirements 
+Screen 
+PRD 
+Description 
+Key UI Requirements 
+UC(s) 
+Home 
+Screen
+Journey start
+Large ‘Plan My Journey’ button. Language toggle. Offline 
+badge if data cached. Simple layout for low-literacy users.
+UC-NMS-01 / 
+UC-NMS-05
+Route Query 
+Screen
+Source + 
+destination input
+Two large text fields with station autocomplete. GenAI input 
+option. Kannada labels. Find Route button prominent.
+UC-NMS-01 / 
+UC-NMS-06
+Route Result 
+Screen
+Fare and route 
+summary
+Line colour strip, stop count, fare (₹) in large font, time in 
+mins. ‘Show Me How’ and ‘Which Gate?’ CTAs.
+UC-NMS-01
+Visual Guide 
+Screen 
+Stepper UI
+Full-width platform photo per step. Kannada caption (min 
+18sp). Step counter. ‘Next’ / ‘Previous’ buttons. Interchange 
+step: dual-colour badge.
+UC-NMS-02
+Token 
+Machine 
+Screen
+4-step token sub-
+flow 
+4 fixed steps with photos. Large Kannada captions. ‘Done’ 
+returns to main guide. 
+UC-NMS-02
+Exit Finder 
+Screen
+Gate lookup
+Large gate number display (min 40sp). Direction label. 
+Walking distance. Exit map image. Works fully offline.
+UC-NMS-03
+Admin Panel
+Exit gate 
+management
+Station list with edit/add. Exit form with all required fields. 
+Photo upload button. Changes instant.
+UC-NMS-07
+Settings 
+Screen 
+Language + 
+preferences 
+Language toggle (English / ಕನ౬ಡ). Cache status. Admin 
+mode toggle (if authorised).
+UC-NMS-05
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 22 
+10. Requirements Traceability Matrix (RTM) 
+10.1 RTM Purpose and Rules 
+The RTM links every requirement to its use case, design component, and test case. This ensures: 
+• 
+No orphan requirements: Every FR has at least one UC covering it. 
+• 
+No orphan use cases: Every UC maps to at least one PRD Section 5 FR source. 
+• 
+No untestable requirements: Every FR has at least one Test Case ID. 
+• 
+Complete design coverage: Every FR maps to the specific MVVM component that implements it. 
+ 
+10.2 Namma-Metro Sahaya RTM — FR to Design to Test 
+FR ID 
+PRD 
+Requirement 
+UC ID 
+Design Component (MVVM) 
+Test Case 
+IDs / Status 
+FR-NMS-
+01 
+Route calc + path 
+display within 2s 
+UC-
+NMS-01 
+RouteQueryScreen + 
+RouteViewModel.calculateRoute() + 
+RouteRepository.findPath() + Room DB 
+Segments
+TC-NMS-01a–
+01c | [ ] Draft 
+→ [ ] Accepted 
+FR-NMS-
+02 
+Fare and travel 
+time display 
+UC-
+NMS-01 
+RouteResultScreen + 
+FareViewModel.calculateFare() + 
+RouteRepository.getFareMatrix() + Room DB 
+FareMatrix
+TC-NMS-02a–
+02c | [ ] Draft 
+→ [ ] Accepted 
+FR-NMS-
+03 
+Visual Guide 
+Stepper with 
+offline photos 
+UC-
+NMS-02 
+VisualGuideScreen StepperComposable + 
+GuideViewModel.getSteps() + 
+StationRepository.getCachedPhotos() + Room 
+DB
+TC-NMS-03a–
+03c | [ ] Draft 
+→ [ ] Accepted 
+FR-NMS-
+04 
+Interchange step 
+dual-colour 
+indicator
+UC-
+NMS-02 
+InterchangeStepComposable + 
+GuideViewModel.isInterchange() + Room DB 
+Lines
+TC-NMS-04a–
+04c | [ ] Draft 
+→ [ ] Accepted
+FR-NMS-
+05 
+Token Machine 4-
+step sub-flow 
+UC-
+NMS-02 
+TokenMachineScreen + 
+GuideViewModel.getTokenSteps() + Room DB 
+cached photos
+TC-NMS-05a–
+05c | [ ] Draft 
+→ [ ] Accepted
+FR-NMS-
+06 
+Exit gate lookup 
+by landmark 
+within 1s
+UC-
+NMS-03 
+ExitFinderScreen + ExitViewModel.findGate() + 
+ExitRepository.queryByLandmark() + Room DB 
+ExitGates
+TC-NMS-06a–
+06c | [ ] Draft 
+→ [ ] Accepted
+FR-NMS-
+07 
+Exit card render 
+within 1,500ms 
+UC-
+NMS-03 
+ExitCardComposable + 
+ExitViewModel.getExitCard() + Room DB 
+ExitGates + local photo cache
+TC-NMS-07a–
+07c | [ ] Draft 
+→ [ ] Accepted
+FR-NMS-
+08 
+Offline cache on 
+first launch 
+UC-
+NMS-04 
+CacheInitService + 
+CacheRepository.populateAll() + Room DB all 
+tables + internal storage
+TC-NMS-08a–
+08c | [ ] Draft 
+→ [ ] Accepted
+FR-NMS-
+09 
+Offline badge on 
+cached screens 
+UC-
+NMS-04 
+OfflineBadgeComposable + 
+NetworkViewModel.isOffline() + 
+StateFlow<Boolean>
+TC-NMS-09a–
+09b | [ ] Draft 
+→ [ ] Accepted
+FR-NMS-
+10 
+Kannada UI min 
+18sp 
+UC-
+NMS-05 
+strings.xml (kn) + all Composables respecting 
+locale StateFlow + 
+SettingsViewModel.getLanguage()
+TC-NMS-10a–
+10c | [ ] Draft 
+→ [ ] Accepted
+FR-NMS-
+11 
+Language toggle 
+runtime, persisted 
+UC-
+NMS-05 
+SettingsScreen LanguageToggle + 
+SettingsViewModel.setLanguage() + 
+SharedPreferences
+TC-NMS-11a–
+11c | [ ] Draft 
+→ [ ] Accepted
+FR-NMS-
+12 
+GenAI query 
+extraction within 
+3s
+UC-
+NMS-06 
+NLQueryScreen + 
+GenAIViewModel.parseQuery() + 
+GeminiRepository.extract() + Gemini API
+TC-NMS-12a–
+12c | [ ] Draft 
+→ [ ] Accepted
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 23 
+FR-NMS-
+13 
+Fallback manual 
+form on API 
+failure
+UC-
+NMS-06 
+FallbackQueryComposable + 
+GenAIViewModel.onApiFailure() + offline Station 
+dropdown from Room DB
+TC-NMS-13a–
+13c | [ ] Draft 
+→ [ ] Accepted
+FR-NMS-
+14 
+Admin: add/edit 
+exit gate 
+UC-
+NMS-07 
+AdminExitScreen + AdminViewModel.saveExit() 
++ ExitRepository.upsert() + Room DB ExitGates 
+TC-NMS-14a–
+14c | [ ] Draft 
+→ [ ] Accepted
+FR-NMS-
+15 
+Admin: upload 
+station photo 
+UC-
+NMS-07 
+AdminPhotoUploadScreen + 
+AdminViewModel.uploadPhoto() + 
+PhotoRepository.save() + internal storage
+TC-NMS-15a–
+15c | [ ] Draft 
+→ [ ] Accepted
+NFR-
+PERF-01 
+Route display < 
+2,000ms 
+UC-
+NMS-01 
+RouteViewModel async coroutine + 
+Dispatchers.IO + Room DB optimised query 
+NFR-TC-01 | 
+Code Quality 
+20% | [ ] 
+Accepted
+NFR-
+OFFLINE-
+01 
+Full guide offline, 
+photos <1,000ms 
+UC-
+NMS-02 
+/ UC-
+NMS-03
+CacheRepository + Room DB + internal storage 
+photo loader 
+NFR-TC-OFL-
+01 | Code 
+Quality 20% | 
+[ ] Accepted
+NFR-
+MAINT-01 
+0 DAO calls in 
+Composables 
+All UCs
+All Composables: confirm 0 Room DAO imports. 
+All state as StateFlow from ViewModels. 
+Repository sole importer of DAO. 
+Code review 
+checklist | 
+Code Quality 
+20% | [ ] 
+Accepted
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 24 
+11. Acceptance Criteria and Sign-off 
+11.1 Requirements Acceptance Checklist 
+Acceptance Check 
+Standard 
+Pass? 
+Notes 
+Every PRD section bullet has 
+at least one atomic FR 
+15+ FRs for Namma-Metro 
+Sahaya 
+✔ YES 
+15 FRs defined across 7 FR Groups 
+(FR-NMS-01 through FR-NMS-15) in 
+Section 4.
+Every FR is specific, 
+measurable, and testable 
+Zero vague adjectives in 
+any FR 
+✔ YES 
+All FRs use measurable thresholds 
+(e.g., ‘within 2,000ms’, ‘<500KB’, ‘max 
+30 chars’).
+Every UC has all 12 fields 
+including 2+ exception flows 
+Each UC: trigger, precond, 
+steps, alt, exceptions, 
+postcond, BRs, ACs
+✔ YES 
+6 fully worked UCs in Section 6. Each 
+has 12 fields, 3+ exception flows. 
+RTM has no blank rows (FR 
+without UC) 
+Zero blank FR→UC links; 
+zero blank UC→TC links 
+✔ YES 
+RTM in Section 10 covers all 15 FRs 
+and key NFRs with ViewModel + DAO 
+component names.
+ERD matches schema in 
+Section 8 
+ERD reviewed against 
+Section 8 side-by-side 
+✔ 
+YES* 
+*Schema fully documented in Section 8. 
+Draw.io ERD diagram to be inserted in 
+Section 7.2 before final submission.
+NFR statements have 
+measurable thresholds and 
+named test methods
+e.g., <2,000ms measured 
+with Android Studio Profiler 
+✔ YES 
+All 10 NFRs include threshold, test 
+method, and pass criterion (Section 5). 
+All personas from PRD 
+Section 4 reflected in at least 
+one UC actor
+Meena Devi in >=1 UC; 
+Admin in >=1 UC 
+✔ YES 
+Meena Devi is actor in UC-NMS-01 
+through UC-NMS-06. Rajesh is actor in 
+UC-NMS-07.
+PRD Out-of-Scope items 
+documented in the Scope 
+section
+All 5 exclusions listed with 
+rationale 
+✔ YES 
+OOS-01 through OOS-05 listed in 
+Section 1.2 with rationale for each 
+exclusion.
+ 
+11.2 Mentor Walkthrough Agenda 
+Time 
+Walkthrough Activity 
+Expected Outcome 
+0–5 
+min 
+Team presents 2 UCs as worked examples. Start with 
+most complex: UC-NMS-02 (Visual Guide) or UC-NMS-03 
+(Exit Finder).
+Mentor understands detail and format. 
+Raises structural concerns. 
+5–20 
+min 
+Mentor asks exception-case questions: ‘What happens if 
+the guide photo is not cached?’, ‘What if GenAI API is 
+down?’, ‘What if the user’s device has no storage?’ 
+Team answers from documented 
+Exception Flows. Any unanswered = 
+incomplete UC. Update UC during 
+meeting.
+20–30 
+min
+Mentor reviews the RTM. Checks: any blank rows? Any 
+FR without a test case?
+Mentor identifies gaps. Team commits to 
+resolving within 24 hours.
+30–40 
+min
+Mentor reviews Section 8 schema. Confirms Room DB 
+field names, types, and FK references match PRD.
+Schema confirmed frozen for Week 2 end. 
+Additions discussed as Change Requests.
+40–45 
+min 
+Formal acceptance: Mentor signs or sends written 
+confirmation on UC Register. 
+SRD accepted. Scope baseline 
+established. Future changes = Change 
+Request per Project Charter.
+ 
+11.3 Sign-off 
+BY SIGNING BELOW, THE PROJECT SPONSOR CONFIRMS THAT THE REQUIREMENTS DEFINED IN THIS 
+DOCUMENT REPRESENT THE COMPLETE AND AGREED SCOPE FOR THE NAMMA-METRO SAHAYA 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 25 
+ANDROID APPLICATION. THIS DOCUMENT SERVES AS THE REQUIREMENTS BASELINE — ANY 
+CHANGE REQUIRES A FORMAL CHANGE REQUEST. 
+ 
+Role 
+Name 
+Date 
+Scope Accepted? 
+Signature 
+Project Sponsor 
+(Mentor)
+Tirumal 
+29/04/2026
+[ ] Yes — accepted  [ ] No — 
+changes required
+ 
+Project Manager / 
+Team Lead
+Praveen Goudappa 
+Yadahalli
+29/04/2026
+[ ] Confirmed — will develop to this 
+document
+ 
+DB Handler
+Praveen Goudappa 
+Yadahalli
+29/04/2026
+[ ] Confirmed — Section 8 schema 
+accepted
+ 
+UI Developer
+Praveen Goudappa 
+Yadahalli
+29/04/2026
+[ ] Confirmed — Section 9 UI 
+requirements accepted
+ 
+Feature Integrator
+Praveen Goudappa 
+Yadahalli
+29/04/2026
+[ ] Confirmed — all FR and UC 
+accepted
+ 
+ 
+ 
+ 
+Software Requirements Document · Namma-Metro Sahaya (Metro Infrastructure) · MindMatrix VTU Internship Programme · Project 
+73 · v1.0 · CONFIDENTIAL 
+

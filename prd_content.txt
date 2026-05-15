@@ -1,0 +1,551 @@
+﻿REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 1 
+ 
+ 
+ 
+NAMMA-METRO SAHAYA 
+SOFTWARE REQUIREMENTS DOCUMENT (SRD) 
+Android App Development using GenAI | Metro Infrastructure 
+MindMatrix VTU Internship Programme | Project Title: 73 
+ 
+First-Timer’s Metro Guide · Visual Directions · Offline-Ready 
+ 
+ 
+NAME 
+Praveen Goudappa Yadahalli 
+USN 
+4MN22CS038 
+MAIL 
+praveengyadahalli911@gmail.com 
+COLLEGE 
+Maharaja institute of technology Thandavapura 
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 2 
+Document Control 
+Document Title 
+Software Requirements Document (SRD) — Namma-Metro Sahaya 
+Document ID 
+SRD-NMS-001 
+Version 
+v1.0 (Initial Draft) 
+Status 
+DRAFT 
+Prepared By 
+Praveen Goudappa Yadahalli 
+PRD Reference 
+Namma-Metro Sahaya PRD v1.0 — Annex A 
+Project Charter Ref 
+PC-NMS-001 v1.0 
+Date Prepared 
+April 2026 
+Status at Preparation 
+Requirements 
+ 
+Document Contents 
+• 
+Introduction and Purpose 
+• 
+Stakeholders and User Personas 
+• 
+System Context and Architecture Overview 
+• 
+Functional Requirements (FR) 
+• 
+Non-Functional Requirements (NFR) 
+• 
+Use Case Register and Specifications 
+• 
+Requirements Modelling 
+• 
+Data Requirements (Database Schema) 
+• 
+UI / UX Requirements 
+• 
+Requirements Traceability Matrix (RTM) 
+• 
+Acceptance Criteria and Sign-off 
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 3 
+1. Introduction and Purpose 
+1.1 Purpose of This Document 
+This Software Requirements Document (SRD) defines the complete, precise, and testable requirements for the 
+Namma-Metro Sahaya Android application. It expands the MindMatrix PRD into: 
+• 
+Atomic Functional Requirements (FR): Each prefixed FR-NMS-XX, written as ‘The system shall’ 
+• 
+Measurable Non-Functional Requirements (NFR): Quality constraints with specific test thresholds from 
+PRD Section 6 
+• 
+Use Cases: 12-field specifications for each major user interaction 
+• 
+Requirements Traceability: Every FR linked to a Use Case, Design Component, and Test Case ID 
+ 
+This document becomes the authoritative reference for development, testing, and stakeholder acceptance. Any 
+change after mentor sign-off requires a formal Change Request per the Project Charter (PC-NMS-001). 
+ 
+1.2 Scope 
+In Scope 
+• 
+F-01: Simple route query — user enters source and destination, app computes Metro path 
+• 
+F-02: Step-by-step Visual Guide with platform photos and directional instructions 
+• 
+F-03: Exit Finder — identifies the correct exit gate for a given destination (e.g., KSRTC Bus Stand) 
+• 
+F-04: Fare & Time display — ticket price and estimated travel time for the journey 
+• 
+F-05: Interchange guidance — clear Purple/Green line switch instructions at Majestic 
+• 
+F-06: Token machine walkthrough — step-by-step card tapping and token purchase guide 
+• 
+F-07: Offline mode — station exit images and route data cached locally for tunnel use 
+• 
+F-08: Kannada language UI — large-font Kannada text for all primary screens 
+Out of Scope 
+• 
+OOS-01: Real-time train arrival tracking — no official BMRCL API available; Phase 2 roadmap 
+• 
+OOS-02: Ticket purchase or payment integration — not part of MVP 
+• 
+OOS-03: iOS / web platform — Android only for internship MVP 
+• 
+OOS-04: Bus or auto-rickshaw routing beyond Metro network 
+• 
+OOS-05: Live crowd density or coach occupancy data 
+ 
+1.3 Intended Audience 
+Reader 
+Purpose for Reading This Document 
+Development Team (UI Dev, DB 
+Handler, Feature Integrator)
+Understand exact requirements before coding. Every FR is a 
+development target. Every UC is a coding specification.
+Project Sponsor / Mentor
+Review and accept requirements. Sign off Section 11. Basis for 
+milestone demo evaluation.
+MindMatrix Programme Evaluator
+Verify that Section 16 evaluation criteria are met. The RTM (Section 
+10) links evaluation criteria to implemented features.
+Tester (Week 5)
+Derive test cases from FRs, Exception Flows, and NFR acceptance 
+tests in Sections 4, 5, and 6.
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 4 
+2. Stakeholders and User Personas 
+2.1 Stakeholder Map 
+Stakeholder 
+Role 
+Power/Interest 
+Key Influence 
+Mentor (Project Sponsor)
+Approves SRD. Accepts 
+deliverables at Week 6.
+HIGH / HIGH
+Defines acceptance criteria. Final 
+authority on Change Requests.
+DB Handler
+Implements Room DB / 
+SQLite entities per Section 
+8.
+TEAM / TECH
+Section 8 Data Requirements 
+authored and owned by this role. 
+UI Developer
+Implements all screens per 
+Section 9.
+TEAM / TECH
+Section 9 UI/UX Requirements 
+and Use Case triggers/screens.
+Feature Integrator
+Implements GenAI, 
+pathfinding, offline caching.
+TEAM / TECH
+Section 4 FRs for route logic, 
+Visual Guide, and offline features.
+End User — Meena Devi 
+(Rural First-Timer)
+Rural passenger using 
+Metro for the first time.
+LOW / HIGH
+Meena’s confusion drives all 
+Visual Guide and Exit Finder FRs.
+End User — BMRCL 
+Admin
+Updates station exit and 
+interchange data.
+LOW / HIGH
+Admin data entry FRs and 
+dashboard UX.
+ 
+2.2 User Personas 
+Persona 1 — Meena Devi (Primary First-Time Metro User) 
+Name / Age
+Meena Devi | Age 34
+Occupation
+Vegetable vendor from Tumkur, travelling to NIMHANS for a medical appointment
+Goal
+Board the correct Metro line, know where to exit, and reach NIMHANS without getting lost
+Pain Points
+Cannot read English signage; confused by token machines; afraid of taking the wrong exit or 
+missing the interchange at Majestic
+Expectation
+App shows photos of her platform, step-by-step in Kannada, and tells her exactly which gate 
+leads to the hospital
+Scenario
+Meena enters ‘Majestic’ as source and ‘Nimhans’ as destination. App displays: take Green 
+Line to Jayanagar, exit Gate 2, walk 200m. Each step has a platform photo. Works offline 
+inside the tunnel.
+Derived 
+Requirements
+FR-NMS-01 (route query) | FR-NMS-03 (visual guide) | FR-NMS-04 (exit finder) | FR-NMS-
+07 (offline) | FR-NMS-08 (Kannada UI)
+ 
+Persona 2 — BMRCL Station Data Admin 
+Name / Age
+Rajesh Kumar | Age 42
+Occupation
+Metro station operations supervisor
+Goal
+Keep station exit data, platform photos, and interchange info accurate and up to date
+Pain Points
+No digital tool to update exit gate associations; gate numbers change seasonally
+Scenario
+Rajesh updates Gate 3 of Jayanagar station to point to NIMHANS instead of Gate 2 after 
+construction changes. All users immediately see the correct gate.
+Derived 
+Requirements
+FR-NMS-09 (admin station edit) | FR-NMS-10 (exit gate management)
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 5 
+3. System Context and Architecture Overview 
+3.1 System Architecture 
+Layer 
+Components 
+Role 
+Reference 
+View (UI 
+Layer) 
+All Jetpack Compose Composable 
+functions (Stepper screens, Route 
+Input, Exit Finder)
+Renders state. No business 
+logic. No direct DB calls. 
+View Layer — 
+Compose screens 
+ViewModel 
+Layer 
+RouteViewModel, GuideViewModel, 
+ExitViewModel, FareViewModel 
+Exposes StateFlow to UI. 
+Contains pathfinding and ETA 
+logic.
+ViewModel layer
+Repository 
+Layer 
+RouteRepository, StationRepository, 
+ExitRepository 
+Abstracts all data operations. 
+Mediates between ViewModel 
+and Room DB.
+Repository 
+classes handle 
+CRUD
+Data Layer 
+(Room DB) 
+Entity classes + DAO + AppDatabase
+Local storage for stations, 
+exits, routes, photos. Schema 
+in Section 8.
+Local DB: Room
+GenAI Layer
+Gemini API / on-device model for 
+natural language query parsing
+Parses free-text destination 
+into structured station lookup.
+Cloud API: Gemini
+ 
+3.2 Architecture Constraint 
+CRITICAL: No Room DAO or Gemini API method shall be called directly from any Composable function. All data 
+access must route through ViewModel → Repository → Room/API. This constraint is evaluated in Section 16 
+Code Quality (20%) and tested in NFR-MAINT-01. 
+ 
+ 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 6 
+4. Functional Requirements (FR) 
+4.1 FR Format and Conventions 
+Every Functional Requirement follows this format: 
+FR-NMS-[Number]: The system shall [verb] [object] [conditions] [constraint / threshold]. 
+• 
+FR-NMS-XX: Namma-Metro Sahaya functional requirement 
+• 
+Priority codes: M = Must Have | S = Should Have | C = Could Have (Innovation) 
+• 
+Every FR is: Atomic (one behaviour per FR) | Testable | Unambiguous (no ‘fast’, ‘easy’, ‘good’) 
+ 
+4.2 FR Group 1 — Route Query and Path Calculation (PRD Section 5.1) 
+FR ID 
+Requirement — The system shall… 
+Pri 
+UC 
+Ref 
+Test IDs 
+FR-
+NMS-
+01 
+...allow a user to enter a source station and destination 
+station (free-text or dropdown). On submission, the 
+system shall compute the shortest Metro path using a 
+graph-based pathfinding algorithm (Nodes = Stations, 
+Edges = track segments) and display the step-by-step 
+journey within 2 seconds.
+M
+UC-
+NMS-
+01 
+TC-NMS-01a: Valid route 
+displayed. TC-NMS-01b: 
+Same src/dst → error. TC-
+NMS-01c: No path → ‘No 
+direct route’. 
+FR-
+NMS-
+02 
+...display the Fare and Estimated Travel Time for the 
+computed journey. Fare shall be calculated from the 
+station fare matrix (stored in Room DB). Travel time 
+shall be SUM of average segment durations. Display 
+shall read ‘Fare: ₹X | Est. Time: Y mins’. 
+M
+UC-
+NMS-
+01 
+TC-NMS-02a: Fare correct 
+for 3-stop journey. TC-NMS-
+02b: Travel time matches 
+segment sum. TC-NMS-02c: 
+Displayed within 2s of route 
+calc.
+ 
+4.3 FR Group 2 — Visual Step-by-Step Guide (PRD Section 5.2) 
+FR ID 
+Requirement — The system shall… 
+Pri 
+UC 
+Ref 
+Test IDs 
+FR-
+NMS-
+03 
+...display a Visual Guide as a Stepper UI with one step 
+per major action (e.g., ‘Buy token at machine’, ‘Board 
+Green Line at Platform 1’, ‘Switch at Majestic’, ‘Exit Gate 
+3’). Each step shall show a platform/station photo stored 
+locally and a one-line Kannada instruction. The guide 
+shall function fully offline (no network required).
+M
+UC-
+NMS-
+02 
+TC-NMS-03a: All steps 
+shown with photos. TC-
+NMS-03b: Works with 
+airplane mode ON. TC-
+NMS-03c: Photos load 
+within 1s offline.
+FR-
+NMS-
+04 
+...highlight Interchange Stations (Majestic / KSR 
+Bengaluru City) distinctly in the Stepper UI using a dual-
+colour indicator (Purple and Green line colours). The 
+interchange step shall display: current line, target line, 
+platform number for the connecting train, and a photo of 
+the interchange corridor.
+M
+UC-
+NMS-
+02 
+TC-NMS-04a: Interchange 
+step shown with dual 
+colours. TC-NMS-04b: 
+Platform number correct. 
+TC-NMS-04c: Photo 
+displays offline.
+FR-
+NMS-
+05 
+...display a Token Machine Walkthrough as a sub-flow 
+within the Visual Guide. The flow shall contain: Step 1 — 
+select destination on screen, Step 2 — insert cash or tap 
+card, Step 3 — collect token, Step 4 — tap token at entry 
+gate. Each step shall include a photo and a 10-word-max 
+Kannada caption.
+M
+UC-
+NMS-
+02 
+TC-NMS-05a: All 4 sub-
+steps present. TC-NMS-
+05b: Kannada captions ≤10 
+words. TC-NMS-05c: Photo 
+per step loads offline. 
+ 
+4.4 FR Group 3 — Exit Finder (PRD Section 5.3) 
+REQUIREMENTS DOCUMENT | Namma-Metro Sahaya · MindMatrix VTU Internship ProgrammeCONFIDENTIAL · SRD-NMS-001 
+CONFIDENTIAL · SRD-NMS-001 · Namma-Metro Sahaya · MindMatrix VTU Internship Programme 
+Page 7 
+FR ID 
+Requirement — The system shall… 
+Pri 
+UC 
+Ref 
+Test IDs 
+FR-
+NMS-
+06 
+...allow a user to query ‘Which gate for [landmark]?’ 
+for their destination station. The system shall look 
+up the ExitGate table in Room DB and return the 
+gate number, a direction label (e.g., ‘North exit’), 
+and estimated walking distance within 1 second. 
+M
+UC-
+NMS-
+03 
+TC-NMS-06a: Gate returned 
+within 1s. TC-NMS-06b: 
+Unknown landmark → 
+‘Landmark not found’. TC-NMS-
+06c: Result correct for KSRTC 
+Bus Stand.
+FR-
+NMS-
+07 
+...display the Exit Finder result as a card showing: 
+Gate Number (large font), Direction Label, Walking 
+Distance (metres), and a static exit map image 
+(cached locally). The card shall render within 
+1,500ms on Android 9+ devices.
+M
+UC-
+NMS-
+03 
+TC-NMS-07a: Card renders 
+within 1,500ms. TC-NMS-07b: 
+Map image loads offline. TC-
+NMS-07c: Large-font gate 
+number visible at 2m distance.
+ 
+4.5 FR Group 4 — Offline Mode and Data Caching (PRD Section 5.4) 
+FR ID 
+Requirement — The system shall… 
+Pri 
+UC 
+Ref 
+Test IDs 
+FR-
+NMS-
+08 
+...cache all station exit images, route graph data, 
+and fare matrix to device storage on first app launch. 
+Cached data shall persist across app restarts. The 
+Visual Guide and Exit Finder shall function fully with 
+no internet connection after initial cache population.
+M
+UC-
+NMS-
+04 
+TC-NMS-08a: Full guide works 
+in airplane mode. TC-NMS-08b: 
+Cache persists after app restart. 
+TC-NMS-08c: Cache populated 
+within 60s on first launch.
+FR-
+NMS-
+09 
+...display a ‘Cached — works offline’ badge on all 
+screens that operate from local data. The badge 
+shall disappear when the screen requires a live 
+network call (e.g., GenAI query parsing). 
+S
+UC-
+NMS-
+04 
+TC-NMS-09a: Badge visible on 
+Visual Guide in airplane mode. 
+TC-NMS-09b: Badge absent on 
+GenAI-dependent screens with 
+no network.
+ 
+4.6 FR Group 5 — Kannada Language UI (PRD Section 5.5) 
+FR ID 
+Requirement — The system shall… 
+Pri 
+UC 
+Ref 
+Test IDs 
+FR-
+NMS-
+10 
+...display all primary UI labels, step instructions, 
+button text, and error messages in Kannada 
+(Unicode) when the device locale is set to Kannada 
+(kn-IN) or when the user selects Kannada in 
+Settings. Font size for all Kannada text shall be 
+minimum 18sp.
+M
+UC-
+NMS-
+05 
+TC-NMS-10a: Kannada locale → 
+all labels in Kannada. TC-NMS-
+10b: Font size ≥18sp. TC-NMS-
+10c: English fallback when 
+Kannada string missing. 
+FR-
+NMS-
+11 
+...provide a language toggle in the Settings screen 
+allowing the user to switch between English and 
+Kannada at runtime without restarting the app. The 
+selected language shall persist across app restarts 
+in SharedPreferences.
+M
+UC-
+NMS-
+05 
+TC-NMS-11a: Toggle switches 
+language in <500ms. TC-NMS-
+11b: Language persists after 
+restart. TC-NMS-11c: All screens 
+update simultaneously on toggle.
+ 
+4.7 FR Group 6 — GenAI Query Parsing (PRD Section 5.6) 
+FR ID 
+Requirement — The system shall… 
+Pri 
+UC 
+Ref 
+Test IDs 
+FR-
+NMS-
+12 
+...accept a natural-language destination query (e.g., 
+‘How do I reach NIMHANS from Majestic?’) and use 
+a GenAI model (Gemini API) to extract the source 
+station and destinat

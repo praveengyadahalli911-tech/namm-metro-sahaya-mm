@@ -1,0 +1,39 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "namm-metro-sahaya",
+          "appId": "1:646066973921:android:97d0f7c78d1d32d3c55ba0",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "namm-metro-sahaya",
+          "configurations": {
+            "android": "1:646066973921:android:97d0f7c78d1d32d3c55ba0",
+            "ios": "1:646066973921:ios:a0ab5e14aa820842c55ba0",
+            "macos": "1:646066973921:ios:a0ab5e14aa820842c55ba0",
+            "web": "1:646066973921:web:1a3443d1cca419b2c55ba0",
+            "windows": "1:646066973921:web:b19568654bb10ee9c55ba0"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

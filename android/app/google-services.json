@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "646066973921",
+    "project_id": "namm-metro-sahaya",
+    "storage_bucket": "namm-metro-sahaya.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:646066973921:android:97d0f7c78d1d32d3c55ba0",
+        "android_client_info": {
+          "package_name": "com.example.namm_metro_sahaya"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRJ8qFFQen-RGbXqUw_MMhV4il0eVGGJg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
